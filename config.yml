@@ -1,0 +1,8 @@
+server:
+  host: 127.0.0.1
+  port: 8000
+  timeout:
+    server: 30
+    read: 15
+    write: 5
+    idle: 5
