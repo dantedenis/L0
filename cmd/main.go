@@ -1,12 +1,12 @@
 package main
 
 import (
-	"L0/server"
+	"L0/cmd/web"
 	"fmt"
 )
 
 func main() {
-	config, err := server.NewConfig("config.yml")
+	config, err := web.NewConfig("config.yml")
 	if err != nil {
 		fmt.Println(err)
 	}
