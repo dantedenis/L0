@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	config, err := web.NewConfig("config.yml")
+	config, err := web.NewApplication("config.yml")
 	if err != nil {
 		fmt.Println(err)
 	}
