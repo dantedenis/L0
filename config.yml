@@ -6,3 +6,9 @@ server:
     read: 15
     write: 5
     idle: 5
+sql:
+  host: 127.0.0.1
+  port: 5432
+  user: test
+  pass: 123
+  db_name: "test_db"
