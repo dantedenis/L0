@@ -3,7 +3,10 @@ package cache
 import (
 	"L0/pkg/model"
 	"context"
+	"errors"
+	"fmt"
 	"github.com/jackc/pgx/v4"
+	"reflect"
 	"sync"
 )
 
@@ -32,17 +35,25 @@ func (c *Cache) RestoreCache(conn *pgx.Conn, request string) error {
 		if err != nil {
 			return err
 		}
-		c.Set(data.ID, data.Data)
+		err = c.Set(data.ID, data.Data)
+		if err != nil {
+			fmt.Println(data.ID, "error type model")
+		}
 	}
 	return nil
 }
 
 // Set - GET methods (Asynchronous with mutex)
-func (c *Cache) Set(key int, value model.Model) {
+func (c *Cache) Set(key int, value model.Model) error {
+	var cmp model.Model
+	if reflect.DeepEqual(value, cmp) {
+		return errors.New("error type model")
+	}
 	c.Lock()
 	defer c.Unlock()
 
 	c.data[key] = value
+	return nil
 }
 
 func (c *Cache) Get(key int) (model.Model, bool) {
