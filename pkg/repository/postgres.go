@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"fmt"
-	"github.com/jackc/pgconn"
+	"github.com/jackc/pgx/v4"
 )
 
 type Postgres struct {
@@ -26,8 +26,8 @@ user=jack password=secret host=pg.example.com port=5432 dbname=mydb sslmode=veri
 postgres://jack:secret@pg.example.com:5432/mydb?sslmode=verify-c
 */
 
-func (p *Postgres) GetConnection() (*pgconn.PgConn, error) {
-	conn, err := pgconn.Connect(context.Background(), fmt.Sprintf("postgres://%s:%s@%s:%s/%s", p.User, p.Password, p.Host, p.Port, p.NameDB))
+func (p *Postgres) GetConnection() (*pgx.Conn, error) {
+	conn, err := pgx.Connect(context.Background(), fmt.Sprintf("postgres://%s:%s@%s:%s/%s", p.User, p.Password, p.Host, p.Port, p.NameDB))
 	if err != nil {
 		return nil, err
 	}

@@ -1,21 +1,22 @@
 package web
 
 import (
-	"context"
+	"L0/pkg/model"
+	"encoding/json"
 	"fmt"
-	"net/http"
+	"github.com/nats-io/stan.go"
 )
 
-func (a *Application) GetExecID(w http.ResponseWriter, request string) error {
+func (a *Application) PutAll(m *stan.Msg) {
+	var data model.Model
 
-	response := a.ConnectionDB.ExecParams(context.Background(), request, nil, nil, nil, nil)
-
-	fmt.Fprintf(w, "Connection OK\n")
-	fmt.Fprintf(w, "%s\n", response)
-
-	for response.NextRow() {
-		fmt.Println(string(response.Values()[1]))
+	if err := json.Unmarshal(m.Data, &data); err != nil {
+		a.Logger.ErrorLog.Println("Error decode Json-msg:%+v", err)
+		return
 	}
-
-	return nil
+	fmt.Sprintf("insert into public.orders (order_data) values ('$1'::jsonb);", m.Data)
+	//a.ConnectionDB.ExecParams(context.Background(), "insert into public.orders (order_data) values ($1::jsonb);", nil, nil, nil, nil)
+	//a.ConnectionDB.Exec(context.Background(), "insert into public.orders (order_data) values ($1::jsonb);")
+	// TODO: add to BD return id!!
+	//a.Cache.Set()
 }

@@ -23,7 +23,7 @@ func (a *Application) NewRouter() *http.ServeMux {
 	router := http.NewServeMux()
 
 	router.HandleFunc("/", a.home)
-	router.HandleFunc("/1", a.getID)
+	//router.HandleFunc("/show", a.showOrder)
 	return router
 }
 
@@ -35,8 +35,9 @@ func (a *Application) home(w http.ResponseWriter, r *http.Request) {
 	}
 
 	files := []string{
-		"ui/html/home.page.tmpl",
-		"ui/html/base.layout.tmpl",
+		"ui/html/index.html",
+		"ui/html/header.html",
+		"ui/html/closer.html",
 	}
 
 	ts, err := template.ParseFiles(files...)
@@ -51,13 +52,25 @@ func (a *Application) home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (a *Application) getID(w http.ResponseWriter, r *http.Request) {
-	err := a.GetExecID(w, "select * from orders")
-	if err != nil {
-		a.Logger.ErrorLog.Println(err)
-	}
-}
+/*
+func (a *Application) showOrder(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
 
+	k, v := a.Cache.Get(id)
+	if !v {
+		a.notFound(w)
+		return
+	}
+
+	data := struct {
+		Count int,
+		ID string
+	}
+
+
+	// TODO:::! show orders
+}
+*/
 // Server Error
 func (a *Application) serverError(w http.ResponseWriter, err error) {
 	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())

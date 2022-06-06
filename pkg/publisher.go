@@ -7,28 +7,14 @@ import (
 )
 
 func main() {
-	sc, err := stan.Connect("test-cluster", "client12")
+	sc, err := stan.Connect("test-cluster", "master")
 	if err != nil {
 		fmt.Println(err)
 	}
+	defer sc.Close()
 	// Simple Synchronous Publisher
-	err = sc.Publish("foo", []byte("Hello World")) // does not return until an ack has been received from NATS Streaming
-
+	err = sc.Publish("test", []byte("Hello World")) // does not return until an ack has been received from NATS Streaming
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	timer, err := time.ParseDuration("30s")
-	// Simple Async Subscriber
-	sub, err := sc.Subscribe("foo", func(m *stan.Msg) {
-		fmt.Printf("Received a message: %s\n", string(m.Data))
-	}, stan.StartAtTimeDelta(timer))
-	if err != nil {
-		fmt.Println(err)
-	}
-	// Unsubscribe
-	sub.Unsubscribe()
-
-	// Close connection
-	sc.Close()
 }

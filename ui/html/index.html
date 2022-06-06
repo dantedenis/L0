@@ -1,0 +1,15 @@
+{{define "index"}}
+	{{template "header" .}}
+	<form action="result/" name="uuid" method="post">
+		<input type="text" size="40" list="cache">
+		<datalist id="cache">
+			{{range .UUID}}
+				<option> {{ . }} </option>
+			{{ end }}
+		</datalist>
+		<p>
+			<input type="submit" value="Go!">
+		</p>
+	</form>
+	{{template "closer" .}}
+{{end}}
