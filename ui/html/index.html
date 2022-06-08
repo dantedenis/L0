@@ -1,6 +1,6 @@
 {{define "index"}}
 	{{template "header" .}}
-	<h1>В кэше {{ .Count}} записей</h1>
+	<h1>Записей в кэше: {{ .Count}}</h1>
 	<form name="uuid" method="get">
 		<label>
 			<input name="id" type="text" size="40" list="cache">

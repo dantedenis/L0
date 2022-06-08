@@ -91,7 +91,7 @@ func (a Application) Run() {
 	//Subscribe on the channel NATS
 	sub, err := sConn.Subscribe("test", func(m *stan.Msg) {
 		a.PutAll(m)
-	}, stan.StartAtTimeDelta(time.Minute))
+	}, stan.StartAtTimeDelta(time.Second))
 	if err != nil {
 		a.Logger.ErrorLog.Println("Error make subscribe on Nats-channel :%+v", err)
 		return
