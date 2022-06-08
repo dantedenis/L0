@@ -12,12 +12,12 @@ import (
 
 type Cache struct {
 	sync.RWMutex
-	data map[int]model.Model
+	data map[string]model.Model
 }
 
 func NewCache() *Cache {
 	return &Cache{
-		data: make(map[int]model.Model),
+		data: make(map[string]model.Model),
 	}
 }
 
@@ -29,7 +29,7 @@ func (c *Cache) RestoreCache(conn *pgx.Conn, request string) error {
 	for response.Next() {
 		data := struct {
 			Data model.Model `db:"order_data"`
-			ID   int         `db:"id"`
+			ID   string      `db:"id"`
 		}{}
 		err := response.Scan(&data.ID, &data.Data)
 		if err != nil {
@@ -37,17 +37,18 @@ func (c *Cache) RestoreCache(conn *pgx.Conn, request string) error {
 		}
 		err = c.Set(data.ID, data.Data)
 		if err != nil {
-			fmt.Println(data.ID, "error type model")
+			fmt.Println(data.ID, err)
 		}
 	}
+	fmt.Println("restore cache - ok")
 	return nil
 }
 
 // Set - GET methods (Asynchronous with mutex)
-func (c *Cache) Set(key int, value model.Model) error {
+func (c *Cache) Set(key string, value model.Model) error {
 	var cmp model.Model
 	if reflect.DeepEqual(value, cmp) {
-		return errors.New("error type model")
+		return errors.New("type model")
 	}
 	c.Lock()
 	defer c.Unlock()
@@ -56,7 +57,7 @@ func (c *Cache) Set(key int, value model.Model) error {
 	return nil
 }
 
-func (c *Cache) Get(key int) (model.Model, bool) {
+func (c *Cache) Get(key string) (model.Model, bool) {
 	c.RLock()
 
 	defer c.RUnlock()
@@ -67,6 +68,17 @@ func (c *Cache) Get(key int) (model.Model, bool) {
 	}
 
 	return item, true
+}
+
+func (c *Cache) Length() int {
+	return len(c.data)
+}
+
+func (c *Cache) GetAllUUID() (result []string) {
+	for k, _ := range c.data {
+		result = append(result, k)
+	}
+	return
 }
 
 // end methods

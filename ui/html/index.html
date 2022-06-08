@@ -1,15 +1,20 @@
 {{define "index"}}
 	{{template "header" .}}
-	<form action="result/" name="uuid" method="post">
-		<input type="text" size="40" list="cache">
+	<h1>В кэше {{ .Count}} записей</h1>
+	<form name="uuid" method="get">
+		<label>
+			<input name="id" type="text" size="40" list="cache">
+		</label>
 		<datalist id="cache">
-			{{range .UUID}}
+			{{range .UUIDs}}
 				<option> {{ . }} </option>
 			{{ end }}
 		</datalist>
 		<p>
 			<input type="submit" value="Go!">
 		</p>
+		<h3>UUID: {{ .Msg}}</h3>
+		<div class="outline" style="white-space: break-spaces">{{ .Model}}</div>
 	</form>
 	{{template "closer" .}}
 {{end}}

@@ -24,7 +24,6 @@ type Application struct {
 }
 
 func NewApplication(configPath string) (*Application, error) {
-
 	app := &Application{
 		Logger: logger.NewLogger(),
 		DB:     repository.NewPostgres(),
@@ -69,7 +68,7 @@ func (a Application) Run() {
 	}(a.ConnectionDB, context.Background())
 
 	//Restore cache in the BaseData
-	err = a.Cache.RestoreCache(a.ConnectionDB, "select * from orders;")
+	err = a.Cache.RestoreCache(a.ConnectionDB, "select * from test_table;")
 	if err != nil {
 		a.Logger.ErrorLog.Println("Error restore cache")
 		return

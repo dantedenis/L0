@@ -51,7 +51,3 @@ type Model struct {
 	DateCreated       time.Time `json:"date_created"`
 	OofShard          string    `json:"oof_shard"`
 }
-
-func NewModel() *Model {
-	return nil
-}

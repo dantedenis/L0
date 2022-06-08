@@ -9,6 +9,6 @@ server:
 sql:
   host: 127.0.0.1
   port: 5432
-  user: test
+  user: "test"
   pass: 123
   db_name: "test_db"

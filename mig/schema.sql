@@ -1,1 +1,1 @@
-create table orders (id serial primary key, order_data jsonb not null);
+create table test_table (id uuid not null primary key, order_data jsonb not null);

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -23,7 +24,7 @@ func (a *Application) NewRouter() *http.ServeMux {
 	router := http.NewServeMux()
 
 	router.HandleFunc("/", a.home)
-	//router.HandleFunc("/show", a.showOrder)
+	router.HandleFunc("/show", a.showOrder)
 	return router
 }
 
@@ -52,25 +53,43 @@ func (a *Application) home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-/*
 func (a *Application) showOrder(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
+	data := struct {
+		Count int
+		UUIDs []string
+		Model string
+		Msg   string
+	}{Count: a.Cache.Length(),
+		UUIDs: a.Cache.GetAllUUID()}
+	if id != "" {
+		k, v := a.Cache.Get(id)
+		if !v {
+			data.Msg = "Not Found"
+		} else {
+			temp, err := json.MarshalIndent(k, "", "  ")
+			if err != nil {
+				fmt.Println("Error Marshalling")
+				a.serverError(w, err)
+			}
+			data.Model = string(temp)
+			data.Msg = id
+		}
+	}
 
-	k, v := a.Cache.Get(id)
-	if !v {
-		a.notFound(w)
+	t := template.New("index")
+	tmpl, err := t.ParseFiles("ui/html/index.html", "ui/html/header.html", "ui/html/closer.html")
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
-
-	data := struct {
-		Count int,
-		ID string
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
-
-
-	// TODO:::! show orders
 }
-*/
+
 // Server Error
 func (a *Application) serverError(w http.ResponseWriter, err error) {
 	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
